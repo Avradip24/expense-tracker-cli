@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.env
+
+# VS Code
+.vscode/
+
+# Local data — we don't want to commit user's actual expense data
+expenses.json
+
+# OS
+Thumbs.db
+.DS_Store
