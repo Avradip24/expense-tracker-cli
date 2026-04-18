@@ -1,5 +1,5 @@
 import argparse
-from datetime import datetime
+from datetime import date, datetime
 import json
 
 CATEGORIES = ["food", "transport", "entertainment", "rent", "others"]
@@ -17,6 +17,24 @@ def save_expenses(expenses: list[dict]) -> None:
     """Save the expenses list to expenses.json."""
     with open(EXPENSES_FFILE, "w", encoding="utf-8") as f:
         json.dump(expenses, f, indent=2)
+
+def handle_add(args: argparse.Namespace) -> None:
+    """Handle the 'add' command to add a new expense."""
+    expenses = load_expenses()
+    next_id = 1
+    if expenses:
+        next_id = max(e["id"] for e in expenses) + 1
+    new_expense = {
+        "id": next_id,
+        "amount": args.amount,
+        "category": args.category,
+        "note": args.note,
+        "date": date.today().isoformat()
+    }
+    expenses.append(new_expense)
+    save_expenses(expenses)
+    print(f"Added expense: {new_expense['id']} - {new_expense['amount']} Euro for {new_expense['category']}")
+
 
 def parse_args()-> argparse.Namespace:
     """Parse Command Line Arguments"""
@@ -45,7 +63,7 @@ def main() -> None:
     args = parse_args()
 
     if args.command == "add":
-        print(f"TODO: add expense - amount={args.amount}, category={args.category}, note='{args.note}'") 
+        handle_add(args)
     elif args.command == "list":
         if args.category:
             print(f"TODO: list expenses filtered by category - {args.category}")
