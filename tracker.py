@@ -35,6 +35,39 @@ def handle_add(args: argparse.Namespace) -> None:
     save_expenses(expenses)
     print(f"Added expense: {new_expense['id']} - {new_expense['amount']} Euro for {new_expense['category']}")
 
+def handle_list(args: argparse.Namespace) -> None:
+    """Handle the 'list' command to display expenses."""
+    expenses = load_expenses()
+
+    if args.category:
+        expenses = [e for e in expenses if e["category"] == args.category]
+
+    if not expenses:
+        if args.category:
+            print(f"No expenses found for category '{args.category}'.")
+        else:
+            print("No expenses found.")
+        return
+    
+    for e in expenses:
+        print(f"{e['id']}: {e['amount']} Euro for {e['category']} on {e['date']} - Note: {e['note']}")
+
+def handle_total(args: argparse.Namespace) -> None:
+    """Handle the 'total' command to display total spending."""
+    expenses = load_expenses()
+
+    if args.category:
+        expenses = [e for e in expenses if e["category"] == args.category]
+    if not expenses:
+        if args.category:
+            print(f"No expenses to total for category '{args.category}'.")
+        else:
+            print("No expenses to total.")
+        return
+    
+    total = sum(e["amount"] for e in expenses)
+    label = f"for category '{args.category}'" if args.category else "across all categories"
+    print(f"Total spending {label}: {total} Euro")
 
 def parse_args()-> argparse.Namespace:
     """Parse Command Line Arguments"""
@@ -65,15 +98,9 @@ def main() -> None:
     if args.command == "add":
         handle_add(args)
     elif args.command == "list":
-        if args.category:
-            print(f"TODO: list expenses filtered by category - {args.category}")
-        else:
-            print(f"TODO: list all expenses")
+        handle_list(args)
     elif args.command == "total":
-        if args.category:
-            print(f"TODO: show total spending filtered by category - {args.category}")
-        else:
-            print(f"TODO: show total spending across all categories")
+        handle_total(args)
 
 if __name__ == "__main__":
     main()
