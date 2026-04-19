@@ -1,21 +1,21 @@
 import argparse
-from datetime import date, datetime
+from datetime import date
 import json
 
 CATEGORIES = ["food", "transport", "entertainment", "rent", "others"]
-EXPENSES_FFILE = "expenses.json"
+EXPENSES_FILE = "expenses.json"
 
 def load_expenses() -> list[dict]:
     """Load expenses from expenses.json. Returns an empty list if the file doesn't exist."""
     try:
-        with open(EXPENSES_FFILE, "r", encoding="utf-8") as f:
+        with open(EXPENSES_FILE, "r", encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
         return []
 
 def save_expenses(expenses: list[dict]) -> None:
     """Save the expenses list to expenses.json."""
-    with open(EXPENSES_FFILE, "w", encoding="utf-8") as f:
+    with open(EXPENSES_FILE, "w", encoding="utf-8") as f:
         json.dump(expenses, f, indent=2)
 
 def handle_add(args: argparse.Namespace) -> None:
