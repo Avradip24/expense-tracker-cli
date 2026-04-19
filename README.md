@@ -23,7 +23,7 @@ No third-party packages required.
 Clone the repository:
 
 ```bash
-git clone https://github.com/Avradip24/Expense-Tracker-CLI.git
+git clone https://github.com/Avradip24/expense-tracker-cli.git
 cd expense-tracker-cli
 ```
 
