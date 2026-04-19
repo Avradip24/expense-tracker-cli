@@ -86,7 +86,8 @@ Expenses are stored in `expenses.json` in the current directory. The file is cre
 
 ```
 expense-tracker-cli/
-├── tracker.py      # Main script (CLI, persistence, command handlers)
+├── tracker.py
+├── LICENSE
 ├── .gitignore
 └── README.md
 ```
