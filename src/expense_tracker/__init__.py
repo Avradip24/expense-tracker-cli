@@ -1,46 +1,57 @@
+import json
 import argparse
 from datetime import date
-import json
+from dataclasses import dataclass, asdict
 
 CATEGORIES = ["food", "transport", "entertainment", "rent", "others"]
 EXPENSES_FILE = "expenses.json"
 
-def load_expenses() -> list[dict]:
+@dataclass(frozen=True)
+class Expense:
+    """A single expense record."""
+    id: int
+    amount: float
+    category: str
+    note: str
+    date: str
+
+
+def load_expenses() -> list[Expense]:
     """Load expenses from expenses.json. Returns an empty list if the file doesn't exist."""
     try:
         with open(EXPENSES_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
+            return [Expense(**expense) for expense in json.load(f)]
     except FileNotFoundError:
         return []
 
-def save_expenses(expenses: list[dict]) -> None:
+def save_expenses(expenses: list[Expense]) -> None:
     """Save the expenses list to expenses.json."""
     with open(EXPENSES_FILE, "w", encoding="utf-8") as f:
-        json.dump(expenses, f, indent=2)
+        json.dump([asdict(expense) for expense in expenses], f, indent=2)
 
 def handle_add(args: argparse.Namespace) -> None:
     """Handle the 'add' command to add a new expense."""
     expenses = load_expenses()
     next_id = 1
     if expenses:
-        next_id = max(e["id"] for e in expenses) + 1
-    new_expense = {
-        "id": next_id,
-        "amount": args.amount,
-        "category": args.category,
-        "note": args.note,
-        "date": date.today().isoformat()
-    }
+        next_id = max(e.id for e in expenses) + 1
+    new_expense = Expense(
+        id = next_id,
+        amount = args.amount,
+        category = args.category,
+        note = args.note,
+        date = date.today().isoformat()
+    )
     expenses.append(new_expense)
     save_expenses(expenses)
-    print(f"Added expense: {new_expense['id']} - {new_expense['amount']} Euro for {new_expense['category']}")
+    print(f"Added expense: {new_expense.id} - {new_expense.amount} Euro for {new_expense.category}")
 
 def handle_list(args: argparse.Namespace) -> None:
     """Handle the 'list' command to display expenses."""
     expenses = load_expenses()
 
     if args.category:
-        expenses = [e for e in expenses if e["category"] == args.category]
+        expenses = [e for e in expenses if e.category == args.category]
 
     if not expenses:
         if args.category:
@@ -50,14 +61,15 @@ def handle_list(args: argparse.Namespace) -> None:
         return
     
     for e in expenses:
-        print(f"{e['id']}: {e['amount']} Euro for {e['category']} on {e['date']} - Note: {e['note']}")
+        print(f"{e.id}: {e.amount} Euro for {e.category} on {e.date} - Note: {e.note}")
 
 def handle_total(args: argparse.Namespace) -> None:
     """Handle the 'total' command to display total spending."""
     expenses = load_expenses()
 
     if args.category:
-        expenses = [e for e in expenses if e["category"] == args.category]
+        expenses = [e for e in expenses if e.category == args.category]
+        
     if not expenses:
         if args.category:
             print(f"No expenses to total for category '{args.category}'.")
@@ -65,7 +77,7 @@ def handle_total(args: argparse.Namespace) -> None:
             print("No expenses to total.")
         return
     
-    total = sum(e["amount"] for e in expenses)
+    total = sum(e.amount for e in expenses)
     label = f"for category '{args.category}'" if args.category else "across all categories"
     print(f"Total spending {label}: {total} Euro")
 
