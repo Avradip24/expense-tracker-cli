@@ -102,6 +102,4 @@ def main() -> None:
     elif args.command == "total":
         handle_total(args)
 
-if __name__ == "__main__":
-    main()
 
