@@ -15,3 +15,6 @@ expenses.json
 # OS
 Thumbs.db
 .DS_Store
+
+# Environment
+.env

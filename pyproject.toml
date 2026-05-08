@@ -7,7 +7,9 @@ authors = [
     { name = "Avradip Mazumdar", email = "rontymazumdar@gmail.com" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "python-dotenv>=1.2.2",
+]
 
 [project.scripts]
 expense-tracker = "expense_tracker:main"

@@ -4,19 +4,20 @@ import json
 from dataclasses import asdict
 
 from .models import Expense
-
-EXPENSES_FILE = "expenses.json"
+from .config import get_expenses_file
 
 
 def load_expenses() -> list[Expense]:
-    """Load expenses from expenses.json. Returns an empty list if the file doesn't exist."""
+    """Load expenses from the JSON file. Returns an empty list if the file doesn't exist."""
+    path = get_expenses_file()
     try:
-        with open(EXPENSES_FILE, "r", encoding="utf-8") as f:
+        with open(path, "r", encoding="utf-8") as f:
             return [Expense(**expense) for expense in json.load(f)]
     except FileNotFoundError:
         return []
 
 def save_expenses(expenses: list[Expense]) -> None:
-    """Save the expenses list to expenses.json."""
-    with open(EXPENSES_FILE, "w", encoding="utf-8") as f:
+    """Save the expenses list to the JSON file."""
+    path = get_expenses_file()
+    with open(path, "w", encoding="utf-8") as f:
         json.dump([asdict(expense) for expense in expenses], f, indent=2)
